@@ -1,14 +1,14 @@
 import google.generativeai as genai
 import streamlit as st
+from dotenv import dotenv_values
 
 # Load your API key from environment variables
-apikey = "AIzaSyDatXnmrygAM9k3ttUrycJI7IngeLLt1FQ"
-
+env_vars = dotenv_values('.env')
 
 #GET PROMPT
 # Create a function to interact with the ChatGPT API
 def chat_with_bot(prompt):
-    genai.configure(api_key=apikey)
+    genai.configure(api_key=env_vars.get('apikey'))
     model = genai.GenerativeModel('gemini-pro')
     response = model.generate_content(prompt)
     print(response.text)
