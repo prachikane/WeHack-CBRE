@@ -9,10 +9,12 @@ import pandas as pd
 import prompt as pr
 import random as rand
 import newssentiment as ns
+
 st.set_page_config(page_title="GameStock",initial_sidebar_state="collapsed")
 Level = [1, 2, 3, 4, 5]
 currLevel = st.selectbox("Choose Level ", Level)
 investment = pf.getInvest()
+
 def display_message(message, message_container):
 	    # Create the message-shaped background with text
         message_container.write('<div class="message">'+message+'</div>', unsafe_allow_html=True)
@@ -55,10 +57,12 @@ col1, col2 = st.columns([1,2])
 with col1:
     amount = st.empty()
     amount.text("Investment Margin:$"+str(investment))
+
 st.subheader("Portfolio")
 portfolio_container = st.empty()
 portfolio_container.table(pf.getPortfolio())
 stocks={}
+
 if currLevel == 1:
     stocks = {"Google":'GOOG', "Apple":'AAPL', "Microsoft":'MSFT', "Amazon":'AMZN'}
 elif currLevel == 2:
