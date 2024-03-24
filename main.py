@@ -132,7 +132,7 @@ def make_choropleth(input_df, input_id, input_column, input_color_theme):
     return choropleth
 
 # Define a column layout with appropriate widths and gap
-col = st.columns((3, 3), gap='medium')
+col = st.columns((6, 3), gap='medium')
 
 # Display the header for total population
 with col[0]:
@@ -151,7 +151,7 @@ with col[0]:
 
 # Display the header for top states
 with col[1]:
-    st.markdown('#### Top States')
+    st.markdown('#### Results')
 
     st.dataframe(df,
                  hide_index=True,
