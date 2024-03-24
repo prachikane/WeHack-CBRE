@@ -156,9 +156,38 @@ elif 'invoice_id' and 'invoice_number' in df.columns:
         st.markdown('Display Table')
 
         st.dataframe(df,hide_index=True,width=None)
+   
 
 elif 'vendor_id' in df.columns:
     with col[0]:
         st.markdown('Display Table')
 
         st.dataframe(df,hide_index=True,width=None)
+    
+    with col[0]:
+        st.markdown('Vendors Table')
+
+        x_column = df.columns[0]
+        y_column = df.columns[1]
+
+        fig = px.bar(df, x=x_column, y=y_column, labels={'Amount': 'Total Costs ($)'},
+                 title='Total Costs by Vendor ')
+        fig.update_xaxes(title='Vendor Id')
+        fig.update_yaxes(title='Cost')
+        fig.update_layout(xaxis=dict(type='category'))  
+        st.plotly_chart(fig, use_container_width=True)
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
