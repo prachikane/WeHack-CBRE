@@ -20,7 +20,7 @@ def send_sql_query(query):
     # Fetch the results, if any
     results = cursor.fetchall()
 
-    
+    print(results)
 
     # Don't forget to close the connection when done
     conn.close()

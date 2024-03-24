@@ -14,15 +14,19 @@ column_names=[]
 def chat_with_bot(prompt):
     genai.configure(api_key=env_vars.get('apikey'))
     model = genai.GenerativeModel('gemini-pro')
-    response = model.generate_content("create a sql query for the statement " + prompt)
+    response = model.generate_content('create a sql query for the statement ' + prompt)
+    print(response)
     match = re.search(r'```sql\n(.*?)\n```', response.text)
     if match:
-        sql_query = match.group(1)
+        sql=match.group(1)
+        print("Sql query "+sql)
         global results
         global column_names
-        results,column_names = send_sql_query(sql_query)
-    print(results)
-    print(column_names)
+        results,column_names = send_sql_query(sql)
+    else:
+        print("no match found")
+    #print(results)
+    #print(column_names)
     return response.text,results,column_names
 
 # select 10 rows from vendors
