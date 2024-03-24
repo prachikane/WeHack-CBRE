@@ -9,7 +9,7 @@ import altair as alt
 import plotly.express as px
 
 
-st.set_page_config(page_title="GameStock",initial_sidebar_state="expanded")
+st.set_page_config(page_title="CBRE Dashboard",initial_sidebar_state="expanded")
 
 results=[]
 ans=""
