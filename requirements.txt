@@ -4,3 +4,4 @@ streamlit
 plotly
 yfinance
 google-generativeai
+altair
