@@ -8,7 +8,7 @@ import re
 env_vars = dotenv_values('.env')
 results=[]
 column_names=[]
-
+data =[]
 #GET PROMPT
 # Create a function to interact with the ChatGPT API
 def chat_with_bot(prompt):
@@ -17,11 +17,26 @@ def chat_with_bot(prompt):
 
     with open("db_schema.txt", "r") as file:
         # Read the content
+        global data
         data = file.read()
-
-    response = model.generate_content('suppose you are given this scehma\n {data} \n create a sqlite query for the statement ' + prompt +' and write the query in a single line without the use of new lines in between the query')
+    query_prompt='suppose you are given this scehma\n '+ data +'\n create a sqlite query for the statement ' + prompt +' and write the query in a single line without the use of new lines in between the query \n include primary column for all queries'
+    print(query_prompt)
+    response = model.generate_content(query_prompt)
     print(response)
-    match = re.search(r"```sql\n(.*?)\n```", response.text)
+    patterns = [
+        r"```sql(.*?)```",
+        r"```sql\n(.*?)\n```",
+        r"```\n(.*?)\n```",
+        r"```(.*?)```",
+        r"``(.*?)``",
+        r"`(.*?)`",
+        r"(.*?)"
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, response.text)
+        if match:
+            break
+
     if match:
         sql=match.group(1)
         print("Sql query "+sql)
