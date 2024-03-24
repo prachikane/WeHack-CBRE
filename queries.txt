@@ -1,1 +1,9 @@
+
+
+
+
+
+
+
+
 find the total invoice cost for each vendor with columns vendor_id and total_cost
