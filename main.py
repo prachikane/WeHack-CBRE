@@ -12,6 +12,7 @@ import plotly.express as px
 st.set_page_config(page_title="GameStock",initial_sidebar_state="expanded")
 
 results=[]
+ans=""
 df = pd.DataFrame()
 #df.columns = location, 
 def display_message(message, message_container):
@@ -67,8 +68,12 @@ with st.sidebar:
     if user_question:
         prompt = pr.getAnswers(user_question)
         response,results,column_names = pr.chat_with_bot(prompt)
-        df = pd.DataFrame(results)
-        df.columns=column_names
+        if len(results)>0:
+            df = pd.DataFrame(results)
+            df.columns=column_names
+            print(df)
+        else:
+            ans="no results found"
         #report_container.table(df)
         with st.chat_message("user"):
             st.markdown(user_question)
@@ -146,12 +151,16 @@ if 'location' in df.columns and 'asset_id' in df.columns:
 
     # Display the header for top states
     with col[0]:
-        st.markdown('#### Top States')
+        st.markdown('#### Top Assets')
 
         st.dataframe(df,
                     hide_index=True,
                     width=None)
-elif 'invoice_id' and 'invoice_number' in df.columns:
+elif 'invoice_id' and 'amount' in df.columns:
+    with col[0]:
+        fig = px.line(df, x='invoice_date', y='amount', title='Bar Graph')
+        st.plotly_chart(fig)
+    
     with col[0]:
         st.markdown('Display Table')
 
@@ -160,22 +169,25 @@ elif 'invoice_id' and 'invoice_number' in df.columns:
 
 elif 'vendor_id' in df.columns:
     with col[0]:
-        st.markdown('Display Table')
-
-        st.dataframe(df,hide_index=True,width=None)
-    
-    with col[0]:
         st.markdown('Vendors Table')
 
-        x_column = df.columns[0]
-        y_column = df.columns[1]
+        #x_column = df.columns[0]
+        #y_column = df.columns[1]
 
-        fig = px.bar(df, x=x_column, y=y_column, labels={'Amount': 'Total Costs ($)'},
-                 title='Total Costs by Vendor ')
+        fig = px.bar(df, x='vendor_id', y='total_cost', labels={'Amount': 'Total Costs ($)'},title='Total Costs by Vendor ')
         fig.update_xaxes(title='Vendor Id')
         fig.update_yaxes(title='Cost')
         fig.update_layout(xaxis=dict(type='category'))  
         st.plotly_chart(fig, use_container_width=True)
+    with col[0]:
+        st.markdown('Display Table')
+
+        st.dataframe(df,hide_index=True,width=None)
+
+else:
+    st.markdown('Run a query to display statistics')
+    
+    
 
         
 
