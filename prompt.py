@@ -14,9 +14,14 @@ column_names=[]
 def chat_with_bot(prompt):
     genai.configure(api_key=env_vars.get('apikey'))
     model = genai.GenerativeModel('gemini-pro')
-    response = model.generate_content('create a sql query for the statement ' + prompt)
+
+    with open("db_schema.txt", "r") as file:
+        # Read the content
+        data = file.read()
+
+    response = model.generate_content('suppose you are given this scehma\n {data} \n create a sqlite query for the statement ' + prompt +' and write the query in a single line without the use of new lines in between the query')
     print(response)
-    match = re.search(r'```sql\n(.*?)\n```', response.text)
+    match = re.search(r"```sql\n(.*?)\n```", response.text)
     if match:
         sql=match.group(1)
         print("Sql query "+sql)
@@ -24,7 +29,7 @@ def chat_with_bot(prompt):
         global column_names
         results,column_names = send_sql_query(sql)
     else:
-        print("no match found")
+        results,column_names = send_sql_query(response.text)
     #print(results)
     #print(column_names)
     return response.text,results,column_names

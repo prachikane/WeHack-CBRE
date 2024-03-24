@@ -1,0 +1,35 @@
+CREATE TABLE Assets (
+    asset_id INTEGER PRIMARY KEY,
+    asset_name TEXT,
+    location TEXT,
+    purchase_date DATE,
+    purchase_price REAL,
+    current_value REAL,
+    depreciation REAL,
+    category TEXT)
+
+CREATE TABLE Invoice (
+    invoice_id INTEGER PRIMARY KEY,
+    vendor_id INTEGER,
+    asset_id INTEGER,
+    invoice_number TEXT,
+    invoice_date DATE,
+    due_date DATE,
+    amount REAL,
+    status TEXT,
+    payment_date DATE,
+    FOREIGN KEY (vendor_id) REFERENCES Vendors(vendor_id),
+    FOREIGN KEY (asset_id) REFERENCES Assets(asset_id))
+
+CREATE TABLE Vendors (
+    vendor_id INTEGER PRIMARY KEY,
+    vendor_name TEXT,
+    contact_person TEXT,
+    contact_email TEXT,
+    contact_phone TEXT,
+    address TEXT,
+    city TEXT,
+    state TEXT,
+    zip_code TEXT,
+    country TEXT,
+    type_of_service TEXT)
