@@ -19,12 +19,15 @@ def chat_with_bot(prompt):
         # Read the content
         global data
         data = file.read()
-    query_prompt='suppose you are given this scehma\n '+ data +'\n create a sqlite query for the statement ' + prompt +' and write the query in a single line without the use of new lines in between the query \n include primary column for all queries'
+    query_prompt='suppose you are given this scehma\n '+ data +'\n create a sqlite query for the statement ' + prompt +' and write the query in a single line without the use of new lines in between the query \n include primary columns of that particular table for all queries'
     print(query_prompt)
     response = model.generate_content(query_prompt)
     print(response)
+
     patterns = [
         r"```sql(.*?)```",
+        r"```sqlite\n(.*?)\n```",
+        r"```sqlite(.*?)```",
         r"```sql\n(.*?)\n```",
         r"```\n(.*?)\n```",
         r"```(.*?)```",
@@ -39,6 +42,7 @@ def chat_with_bot(prompt):
 
     if match:
         sql=match.group(1)
+        #sql_query=sql.replace('\n','')
         print("Sql query "+sql)
         global results
         global column_names

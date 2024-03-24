@@ -1,0 +1,7 @@
+list all assets
+list all assets where count per state < 2
+list all assets where count category is development
+
+list invoice dates and amount for all vendors with id 26 sort by date
+give me the sum of all invoice amounts as amount on particular invoice date for invoice table sort by date limit 20
+list of all invoices with status is overdue ignore caps sort by date
