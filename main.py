@@ -151,7 +151,13 @@ if 'location' in df.columns and 'asset_id' in df.columns:
         st.dataframe(df,
                     hide_index=True,
                     width=None)
-elif 'invoice_id' in df.columns:
+elif 'invoice_id' and 'invoice_number' in df.columns:
+    with col[0]:
+        st.markdown('Display Table')
+
+        st.dataframe(df,hide_index=True,width=None)
+
+elif 'vendor_id' in df.columns:
     with col[0]:
         st.markdown('Display Table')
 
