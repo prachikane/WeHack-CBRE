@@ -5,14 +5,14 @@ from plotly import graph_objs as go
 import pandas as pd
 import prompt as pr
 import random as rand
+import altair as alt
+import plotly.express as px
 
 
 st.set_page_config(page_title="GameStock",initial_sidebar_state="expanded")
-tables = ['vendors', 'assets', 'invoices']
-currTable = st.selectbox("Choose Table ", tables)
+
 results=[]
-df=[]
-#df = pd.DataFrame()
+df = pd.DataFrame()
 #df.columns = location, 
 def display_message(message, message_container):
 	    # Create the message-shaped background with text
@@ -42,12 +42,10 @@ TODAY = date.today().strftime("%Y-%m-%d")
 message_container = st.empty()
 #display_message(f"{str(currLevel*30)} mins = 1 day" , message_container)
 
-col1, col2, col3 = st.columns(3)
+col1, col2 = st.columns(2)
 with col1:
     st.title('CBRE')
-with col3:
-    progress_text = "Level "+str(currTable)
-    my_bar = st.progress(rand.randint(30,80), text=progress_text)
+with col2:
     with open("TradeReport.pdf", "rb") as file:
         btn = st.download_button(
             label="Download Progress Report",
@@ -57,7 +55,6 @@ with col3:
 col1, col2 = st.columns([1,2])
 with col1:
     amount = st.empty()
-    amount.text("Investment Margin:$"+str('10000'))
 
 st.subheader("Reports")
 report_container=st.empty()
@@ -72,7 +69,7 @@ with st.sidebar:
         response,results,column_names = pr.chat_with_bot(prompt)
         df = pd.DataFrame(results)
         df.columns=column_names
-        report_container.table(df)
+        #report_container.table(df)
         with st.chat_message("user"):
             st.markdown(user_question)
         with st.chat_message("assistant"):
@@ -84,7 +81,7 @@ with st.sidebar:
 col = st.columns((1.5, 4.5, 2), gap='medium')
 
 with col[0]:
-    st.markdown('#### AGGREGATES')
+    st.markdown('#### Aggregates')
 
 # Define a column layout with appropriate widths and gap
 col = st.columns((3, 3, 3), gap='medium')
@@ -111,53 +108,57 @@ else:
 
 
 
-import altair as alt
-import plotly.express as px
-
-
 def make_choropleth(input_df, input_id, input_column, input_color_theme):
     choropleth = px.choropleth(input_df, locations=input_id, color=input_column, locationmode="USA-states",
-                               color_continuous_scale='Viridis',
-                               range_color=(0, 100),
+                               color_continuous_scale=input_color_theme,
+                               range_color=(0, df2[input_column].max()),
                                scope="usa",
                                labels={'count_per_state':'Assets'}
                               )
+    
     choropleth.update_layout(
         template='plotly_dark',
-        plot_bgcolor='rgba(0, 0, 0, 0)',
+        plot_bgcolor=f'rgba(0, 0, 0, 0)',
         paper_bgcolor='rgba(0, 0, 0, 0)',
         margin=dict(l=0, r=0, t=0, b=0),
-        height=350
+        height=300
     )
     return choropleth
 
 # Define a column layout with appropriate widths and gap
-col = st.columns((6, 3), gap='medium')
+col = st.columns(1)
 
 # Display the header for total population
-with col[0]:
-    st.markdown('#### Total Assets')
-    
-    df2 = df[['location', 'asset_id']]
-    df2['state_code'] = df['location'].str.split(",").str[-1].str.strip().str.split().str[0]
-    asset_counts = df2.groupby('state_code')['asset_id'].size().reset_index(name='count_per_state')
-    df2 = df2.merge(asset_counts, on='state_code')
+if 'location' in df.columns and 'asset_id' in df.columns:
+    with col[0]:
+        st.markdown('#### Total Assets')
+        
+        df2 = df[['location', 'asset_id']]
+        df2['state_code'] = df['location'].str.split(",").str[-1].str.strip().str.split().str[0]
+        asset_counts = df2.groupby('state_code')['asset_id'].size().reset_index(name='count_per_state')
+        df2 = df2.merge(asset_counts, on='state_code')
 
-    
-    # Create choropleth map for total population
-    choropleth = make_choropleth(df2, 'state_code', 'count_per_state', 'Greens')
-    st.plotly_chart(choropleth, use_container_width=True)
-    
+        
+        # Create choropleth map for total population
+        choropleth = make_choropleth(df2, 'state_code', 'count_per_state', 'greens')
+        st.plotly_chart(choropleth, use_container_width=True)
+            
 
-# Display the header for top states
-with col[1]:
-    st.markdown('#### Results')
+    # Display the header for top states
+    with col[0]:
+        st.markdown('#### Top States')
 
-    st.dataframe(df,
-                 hide_index=True,
-                 width=None)
+        st.dataframe(df,
+                    hide_index=True,
+                    width=None)
+elif 'invoice_id' and 'invoice_number' in df.columns:
+    with col[0]:
+        st.markdown('Display Table')
 
+        st.dataframe(df,hide_index=True,width=None)
 
+elif 'vendor_id' in df.columns:
+    with col[0]:
+        st.markdown('Display Table')
 
-
-    
+        st.dataframe(df,hide_index=True,width=None)
