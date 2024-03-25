@@ -9,7 +9,6 @@ env_vars = dotenv_values('.env')
 results=[]
 column_names=[]
 data =[]
-#GET PROMPT
 # Create a function to interact with the ChatGPT API
 def chat_with_bot(prompt):
     genai.configure(api_key=env_vars.get('apikey'))
