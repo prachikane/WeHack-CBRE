@@ -5,5 +5,5 @@ plotly
 yfinance
 google-generativeai
 altair
-dotenv
-dbconn
+python-dotenv
+dbConnect
